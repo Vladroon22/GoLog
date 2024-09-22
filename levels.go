@@ -1,4 +1,4 @@
-package pkg
+package golog
 
 import (
 	"os"
@@ -8,9 +8,10 @@ import (
 
 type Logger struct {
 	file        *os.File
-	tm          time.Time
+	tm          time.Time `json:"time"`
 	mu          sync.Mutex
-	isFileExist bool
+	isFileExist bool   `json:"fileIs"`
+	logLevel    string `json:"level"`
 }
 
 type FatalErrors interface {
@@ -33,4 +34,5 @@ type Regular interface {
 
 type DataSetUP interface {
 	SetOutput(string)
+	SetJSONformat(JSONformat)
 }
