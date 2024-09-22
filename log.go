@@ -25,6 +25,12 @@ func (l *Logger) SetOutput(filename string) (*os.File, error) {
 	return file, nil
 }
 
+func (l *Logger) CloseOutput() {
+	if l.isFileExist {
+		l.file.Close()
+	}
+}
+
 func (l *Logger) Info(i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
@@ -33,13 +39,6 @@ func (l *Logger) Info(i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("INFO [" + now + "] " + txt); err != nil {
 			return
 		}
@@ -56,13 +55,6 @@ func (l *Logger) Infoln(i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("INFO [" + now + "] " + txt); err != nil {
 			return
 		}
@@ -79,13 +71,6 @@ func (l *Logger) Infof(format string, i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("INFO [" + now + "] " + txt); err != nil {
 			return
 		}
@@ -102,13 +87,6 @@ func (l *Logger) Error(i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("ERROR [" + now + "] " + txt); err != nil {
 			return
 		}
@@ -125,13 +103,6 @@ func (l *Logger) Errorln(i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("ERROR [" + now + "] " + txt); err != nil {
 			return
 		}
@@ -148,13 +119,6 @@ func (l *Logger) Errorf(format string, i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("ERROR [" + now + "] " + txt); err != nil {
 			return
 		}
@@ -171,13 +135,6 @@ func (l *Logger) Fatal(i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("FATAL [" + now + "] " + txt); err != nil {
 			return
 		}
@@ -195,13 +152,6 @@ func (l *Logger) Fatalln(i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("FATAL [" + now + "] " + txt); err != nil {
 			return
 		}
@@ -219,13 +169,6 @@ func (l *Logger) Fatalf(format string, i ...any) {
 	txt := fmt.Sprint(i...)
 
 	if l.isFileExist {
-		var err error
-		l.file, err = os.OpenFile(l.file.Name(), os.O_WRONLY|os.O_CREATE, 0644)
-		if err != nil {
-			l.Errorln("Ошибка-открытия-json")
-		}
-		defer l.file.Close()
-
 		if _, err := l.file.WriteString("FATAL [" + now + "] " + txt); err != nil {
 			return
 		}
