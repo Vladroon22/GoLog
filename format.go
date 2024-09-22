@@ -5,5 +5,5 @@ type JSONformat struct {
 }
 
 func SetJSONformat(data *JSONformat) *JSONformat {
-	return &JSONformat{JSON: make(map[string][]any)}
+	return data
 }

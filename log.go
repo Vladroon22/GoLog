@@ -39,7 +39,7 @@ func (l *Logger) Info(i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "INFO"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
@@ -55,7 +55,7 @@ func (l *Logger) Infoln(i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "INFO"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
@@ -71,7 +71,7 @@ func (l *Logger) Infof(format string, i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "INFO"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
@@ -87,7 +87,7 @@ func (l *Logger) Error(i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "ERROR"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
@@ -103,7 +103,7 @@ func (l *Logger) Errorln(i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "ERROR"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
@@ -119,7 +119,7 @@ func (l *Logger) Errorf(format string, i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "ERROR"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
@@ -135,7 +135,7 @@ func (l *Logger) Fatal(i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "FATAL"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
@@ -152,7 +152,7 @@ func (l *Logger) Fatalln(i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "FATAL"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
@@ -169,7 +169,7 @@ func (l *Logger) Fatalf(format string, i ...any) {
 	txt := fmt.Sprint(i...)
 	l.logLevel = "FATAL"
 	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt); err != nil {
+		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 			return
 		}
 	}
