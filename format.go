@@ -1,7 +1,7 @@
 package golog
 
 type JSONformat struct {
-	JSON map[string][]any `json:"data"`
+	JSON map[Logger]string
 }
 
 func SetJSONformat(data *JSONformat) *JSONformat {

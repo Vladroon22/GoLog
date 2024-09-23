@@ -14,7 +14,7 @@ func New() *Logger {
 }
 
 func (l *Logger) SetOutput(filename string) (*os.File, error) {
-	file, err := os.OpenFile(filename, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	file, err := os.Create(filename)
 	if err != nil {
 		l.Errorln(err)
 		return nil, err
@@ -23,12 +23,6 @@ func (l *Logger) SetOutput(filename string) (*os.File, error) {
 	l.file = file
 	l.isFileExist = true
 	return file, nil
-}
-
-func (l *Logger) CloseOutput() {
-	if l.isFileExist {
-		l.file.Close()
-	}
 }
 
 func (l *Logger) Info(i ...any) {
