@@ -1,6 +1,7 @@
 package golog
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"time"
@@ -38,7 +39,7 @@ func (l *Logger) Info(i ...any) {
 		}
 	}
 
-	fmt.Print("INFO ["+now+"] ", txt)
+	fmt.Print("INFO ["+now+"]", txt)
 }
 
 func (l *Logger) Infoln(i ...any) {
@@ -54,7 +55,7 @@ func (l *Logger) Infoln(i ...any) {
 		}
 	}
 
-	fmt.Println("INFO ["+now+"] ", txt)
+	fmt.Println("INFO ["+now+"]", txt)
 }
 
 func (l *Logger) Infof(format string, i ...any) {
@@ -70,7 +71,7 @@ func (l *Logger) Infof(format string, i ...any) {
 		}
 	}
 
-	fmt.Printf(format, "INFO ["+now+"] ", txt)
+	fmt.Printf(format, "INFO ["+now+"]", txt)
 }
 
 func (l *Logger) Error(i ...any) {
@@ -86,7 +87,7 @@ func (l *Logger) Error(i ...any) {
 		}
 	}
 
-	fmt.Print("ERROR ["+now+"] ", txt)
+	fmt.Print("ERROR ["+now+"]", txt)
 }
 
 func (l *Logger) Errorln(i ...any) {
@@ -102,7 +103,7 @@ func (l *Logger) Errorln(i ...any) {
 		}
 	}
 
-	fmt.Println("ERROR ["+now+"] ", txt)
+	fmt.Println("ERROR ["+now+"]", txt)
 }
 
 func (l *Logger) Errorf(format string, i ...any) {
@@ -118,7 +119,7 @@ func (l *Logger) Errorf(format string, i ...any) {
 		}
 	}
 
-	fmt.Printf(format, "ERROR ["+now+"] ", txt)
+	fmt.Printf(format, "ERROR ["+now+"]", txt)
 }
 
 func (l *Logger) Fatal(i ...any) {
@@ -134,7 +135,7 @@ func (l *Logger) Fatal(i ...any) {
 		}
 	}
 
-	fmt.Print("FATAL ["+now+"] ", txt)
+	fmt.Print("FATAL ["+now+"]", txt)
 	os.Exit(1)
 }
 
@@ -151,7 +152,7 @@ func (l *Logger) Fatalln(i ...any) {
 		}
 	}
 
-	fmt.Println("FATAL ["+now+"] ", txt)
+	fmt.Println("FATAL ["+now+"]", txt)
 	os.Exit(1)
 }
 
@@ -168,6 +169,15 @@ func (l *Logger) Fatalf(format string, i ...any) {
 		}
 	}
 
-	fmt.Printf(format, "FATAL ["+now+"] ", txt)
+	fmt.Printf(format, "FATAL ["+now+"]", txt)
 	os.Exit(1)
+}
+
+func (l *Logger) SetJSONformat(data *Logger) string {
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		l.Errorln(err)
+		return ""
+	}
+	return string(jsonData)
 }

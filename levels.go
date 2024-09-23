@@ -7,11 +7,11 @@ import (
 )
 
 type Logger struct {
-	file        *os.File
-	tm          time.Time `json:"time"`
-	mu          sync.Mutex
-	isFileExist bool   `json:"fileIs"`
-	logLevel    string `json:"level"`
+	file        *os.File   `json:"-"`
+	tm          time.Time  `json:"time"`
+	mu          sync.Mutex `json:"-"`
+	isFileExist bool       `json:"fileIs"`
+	logLevel    string     `json:"level"`
 }
 
 type FatalErrors interface {
@@ -34,5 +34,5 @@ type Regular interface {
 
 type DataSetUP interface {
 	SetOutput(string)
-	SetJSONformat(JSONformat)
+	SetJSONformat(*Logger)
 }
