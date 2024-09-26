@@ -197,18 +197,15 @@ func (l *Logger) httpDebug(r *http.Request, err error) {
 	defer l.mu.Unlock()
 
 	now := l.tm.Format(time.DateTime)
-	method := r.Method
-	path := r.URL.Path
-	status := r.Response.Status
 	l.logLevel = "DEBUG"
 
 	debug := &Debug{
 		tm:           now,
 		logLevel:     l.logLevel,
 		errorMessage: err.Error(),
-		method:       method,
-		status:       status,
-		path:         path,
+		method:       r.Method,
+		status:       r.Response.Status,
+		path:         r.URL.Path,
 	}
 
 	jsonData, err := json.MarshalIndent(debug, "", " ")
