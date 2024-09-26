@@ -1,6 +1,7 @@
 package golog
 
 import (
+	"net/http"
 	"os"
 	"sync"
 	"time"
@@ -12,6 +13,20 @@ type Logger struct {
 	mu          sync.Mutex `json:"-"`
 	isFileExist bool       `json:"fileIs"`
 	logLevel    string     `json:"level"`
+	IsDebug     bool       `json:"IsDebug"`
+}
+
+type Debug struct {
+	tm           string `json:"time"`
+	logLevel     string `json:"level"`
+	errorMessage any    `json:"msg"`
+	method       string `json:"method"`
+	status       string `json:"httpStatus"`
+	path         string `json:"url"`
+}
+
+type LogFields struct {
+	Data map[string]string
 }
 
 type FatalErrors interface {
@@ -32,7 +47,11 @@ type Regular interface {
 	Infof(string, ...any)
 }
 
+type DebugFunc interface {
+	httpDebug(*http.Request, error)
+}
+
 type DataSetUP interface {
 	SetOutput(string)
-	SetJSONformat(*Logger)
+	SetJSONformat(*LogFields)
 }
