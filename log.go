@@ -22,7 +22,7 @@ func (l *Logger) SetOutput(filename string) (*os.File, error) {
 		l.Errorln(err)
 		return nil, err
 	}
-	defer l.file.Close()
+	defer file.Close()
 	l.file = file
 	l.isFileExist = true
 	return file, nil
@@ -192,7 +192,7 @@ func (l *Logger) Fatalf(format string, i ...any) {
 	os.Exit(1)
 }
 
-func (l *Logger) httpDebug(r *http.Request, err error) {
+func (l *Logger) httplog(r *http.Request) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
@@ -202,7 +202,7 @@ func (l *Logger) httpDebug(r *http.Request, err error) {
 	debug := &Debug{
 		tm:           now,
 		logLevel:     l.logLevel,
-		errorMessage: err.Error(),
+		errorMessage: r.Response.Request.Body,
 		method:       r.Method,
 		status:       r.Response.Status,
 		path:         r.URL.Path,
