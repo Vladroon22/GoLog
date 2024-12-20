@@ -8,14 +8,25 @@ import (
 	"time"
 )
 
+type httpRequest *http.Request
+
 func New() *Logger {
 	return &Logger{
-		IsDebug:     false,
+		IsHttpDebug: false,
 		isFileExist: false,
 		tm:          time.Now(),
 	}
 }
 
+func NewWithJSON() *Logger {
+	return &Logger{
+		IsHttpDebug: true,
+		isFileExist: false,
+		tm:          time.Now(),
+	}
+}
+
+// set log's data into file
 func (l *Logger) SetOutput(filename string) (*os.File, error) {
 	file, err := os.Create(filename)
 	if err != nil {
@@ -31,6 +42,14 @@ func (l *Logger) SetOutput(filename string) (*os.File, error) {
 func (l *Logger) Info(i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
 
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -50,6 +69,14 @@ func (l *Logger) Infoln(i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
+
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 	l.logLevel = "INFO"
@@ -67,6 +94,14 @@ func (l *Logger) Infoln(i ...any) {
 func (l *Logger) Infof(format string, i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
 
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -86,6 +121,14 @@ func (l *Logger) Error(i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
+
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 	l.logLevel = "ERROR"
@@ -103,6 +146,14 @@ func (l *Logger) Error(i ...any) {
 func (l *Logger) Errorln(i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
 
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -122,6 +173,14 @@ func (l *Logger) Errorf(format string, i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
+
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 	l.logLevel = "ERROR"
@@ -139,6 +198,14 @@ func (l *Logger) Errorf(format string, i ...any) {
 func (l *Logger) Fatal(i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
 
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -159,6 +226,14 @@ func (l *Logger) Fatalln(i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
 
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
+
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 	l.logLevel = "FATAL"
@@ -177,6 +252,14 @@ func (l *Logger) Fatalln(i ...any) {
 func (l *Logger) Fatalf(format string, i ...any) {
 	l.mu.Lock()
 	defer l.mu.Unlock()
+
+	if l.IsHttpDebug {
+		for _, item := range i {
+			if req, ok := item.(*httpRequest); ok {
+				l.httplog(*req)
+			}
+		}
+	}
 
 	now := l.tm.Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -198,14 +281,13 @@ func (l *Logger) httplog(r *http.Request) {
 
 	now := l.tm.Format(time.DateTime)
 	l.logLevel = "DEBUG"
-
-	debug := &Debug{
-		tm:           now,
-		logLevel:     l.logLevel,
-		errorMessage: r.Response.Request.Body,
-		method:       r.Method,
-		status:       r.Response.Status,
-		path:         r.URL.Path,
+	debug := &httpDebug{
+		tm:       now,
+		logLevel: l.logLevel,
+		message:  r.Response.Request.Body,
+		method:   r.Method,
+		status:   r.Response.Status,
+		path:     r.URL.Path,
 	}
 
 	jsonData, err := json.MarshalIndent(debug, "", " ")
@@ -217,22 +299,12 @@ func (l *Logger) httplog(r *http.Request) {
 	colorB := "\033[32m"
 	colorE := "\033[0m"
 
-	if l.isFileExist {
-		if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + err.Error() + "\n"); err != nil {
-			return
+	if l.IsHttpDebug {
+		if l.isFileExist {
+			if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + string(jsonData) + "\n"); err != nil {
+				return
+			}
 		}
-	}
-	if l.IsDebug {
 		fmt.Println(colorB + string(jsonData) + colorE)
 	}
-}
-
-func (l *Logger) SetJSONformat(data *LogFields) string {
-	data.Data = make(map[string]string)
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		l.Errorln(err)
-		return ""
-	}
-	return string(jsonData)
 }
