@@ -33,7 +33,6 @@ func (l *Logger) SetOutput(filename string) (*os.File, error) {
 		l.Errorln(err)
 		return nil, err
 	}
-	defer file.Close()
 	l.file = file
 	l.isFileExist = true
 	return file, nil
