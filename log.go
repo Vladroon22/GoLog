@@ -43,7 +43,6 @@ func (l *Logger) SetOutput(filename string, mode int) (*os.File, error) {
 			l.Errorln(err)
 			return nil, err
 		}
-		defer file.Close()
 	} else if mode == FileModify {
 		file, err = os.OpenFile(filename, os.O_WRONLY|os.O_APPEND, 0644)
 		if err != nil {
@@ -51,6 +50,7 @@ func (l *Logger) SetOutput(filename string, mode int) (*os.File, error) {
 			return nil, err
 		}
 	}
+	defer file.Close()
 	l.file = file
 	l.isFileExist = true
 	return file, nil
