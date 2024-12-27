@@ -26,30 +26,14 @@ func NewWithJSON() *Logger {
 	}
 }
 
-const (
-	// Recreates every runtime new log.txt
-	FileReCreate = 1
-	// Opens existed file and writes into it
-	FileModify = 2
-)
-
 // set log's data into file
-func (l *Logger) SetOutput(filename string, mode int) (*os.File, error) {
-	file := &os.File{}
-	var err error
-	if mode == FileReCreate {
-		file, err = os.Create(filename)
-		if err != nil {
-			l.Errorln(err)
-			return nil, err
-		}
-	} else if mode == FileModify {
-		file, err = os.OpenFile(filename, os.O_WRONLY|os.O_APPEND, 0644)
-		if err != nil {
-			l.Errorln(err)
-			return nil, err
-		}
+func (l *Logger) SetOutput(filename string) (*os.File, error) {
+	file, err := os.Create(filename)
+	if err != nil {
+		l.Errorln(err)
+		return nil, err
 	}
+	defer file.Close()
 	l.file = file
 	l.isFileExist = true
 	return file, nil
