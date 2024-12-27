@@ -50,7 +50,6 @@ func (l *Logger) SetOutput(filename string, mode int) (*os.File, error) {
 			return nil, err
 		}
 	}
-	defer file.Close()
 	l.file = file
 	l.isFileExist = true
 	return file, nil
