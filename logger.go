@@ -1,6 +1,7 @@
 package golog
 
 import (
+	"bufio"
 	"os"
 	"sync"
 	"time"
@@ -23,6 +24,9 @@ type Logger struct {
 
 	// enables to see http errors
 	IsHttpDebug bool `json:"IsHttpDebug"`
+
+	// for writting in file
+	writer *bufio.Writer
 }
 
 type httpDebug struct {
