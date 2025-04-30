@@ -27,13 +27,13 @@ func NewWithJSON() *Logger {
 
 // set log's data into file
 func (l *Logger) SetOutput(filename string) error {
-	file, err := os.Create(filename)
+	var err error
+	l.file, err = os.Create(filename)
 	defer l.file.Close()
 	if err != nil {
 		l.Errorln(err)
 		return err
 	}
-	l.file = file
 	l.isFileExist = true
 	l.writer = bufio.NewWriter(l.file)
 	return nil
