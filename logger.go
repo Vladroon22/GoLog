@@ -9,12 +9,12 @@ import (
 
 type Logger struct {
 	// file where stores logs
-	file *os.File `json:"-"`
+	file *os.File
 
 	// current time of this log
 	tm time.Time `json:"time"`
 
-	mu sync.Mutex `json:"-"`
+	mu sync.Mutex
 
 	// check file's existing
 	isFileExist bool `json:"fileIs"`

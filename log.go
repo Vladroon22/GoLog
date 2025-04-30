@@ -15,7 +15,6 @@ func New() *Logger {
 	return &Logger{
 		IsHttpDebug: false,
 		isFileExist: false,
-		tm:          time.Now(),
 	}
 }
 
@@ -23,46 +22,48 @@ func NewWithJSON() *Logger {
 	return &Logger{
 		IsHttpDebug: true,
 		isFileExist: false,
-		tm:          time.Now(),
 	}
 }
 
 // set log's data into file
-func (l *Logger) SetOutput(filename string) (*os.File, error) {
+func (l *Logger) SetOutput(filename string) error {
 	file, err := os.Create(filename)
+	defer l.file.Close()
 	if err != nil {
 		l.Errorln(err)
-		return nil, err
+		return err
 	}
 	l.file = file
 	l.isFileExist = true
 	l.writer = bufio.NewWriter(l.file)
-	return file, nil
+	return nil
+}
+
+func writeToFile(l *Logger, loglevel, now, txt string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
+	l.logLevel = loglevel
+	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
+		fmt.Println("Failed to write to log file:", err)
+		return
+	}
+	l.writer.Flush()
 }
 
 func (l *Logger) Info(i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "INFO", now, txt)
 
 	colorB := "\033[34m"
 	colorE := "\033[0m"
@@ -73,25 +74,15 @@ func (l *Logger) Infoln(i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "INFO", now, txt)
 
 	colorB := "\033[34m"
 	colorE := "\033[0m"
@@ -102,25 +93,15 @@ func (l *Logger) Infof(format string, i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "INFO", now, txt)
 
 	colorB := "\033[34m"
 	colorE := "\033[0m"
@@ -131,25 +112,15 @@ func (l *Logger) Error(i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "ERROR", now, txt)
 
 	colorB := "\033[33m"
 	colorE := "\033[0m"
@@ -160,25 +131,15 @@ func (l *Logger) Errorln(i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "ERROR", now, txt)
 
 	colorB := "\033[33m"
 	colorE := "\033[0m"
@@ -189,25 +150,15 @@ func (l *Logger) Errorf(format string, i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "ERROR", now, txt)
 
 	colorB := "\033[33m"
 	colorE := "\033[0m"
@@ -218,25 +169,15 @@ func (l *Logger) Fatal(i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "ERROR", now, txt)
 
 	colorB := "\033[31m"
 	colorE := "\033[0m"
@@ -248,25 +189,15 @@ func (l *Logger) Fatalln(i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "FATAL", now, txt)
 
 	colorB := "\033[31m"
 	colorE := "\033[0m"
@@ -278,25 +209,15 @@ func (l *Logger) Fatalf(format string, i ...any) {
 	if l.IsHttpDebug {
 		for _, item := range i {
 			if req, ok := item.(*httpRequest); ok {
-				l.mu.Lock()
 				l.httplog(*req)
-				l.mu.Unlock()
 			}
 		}
 	}
 
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
 
-	l.mu.Lock()
-	defer l.mu.Unlock()
-
-	l.logLevel = "INFO"
-	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
-		fmt.Println("Failed to write to log file:", err)
-		return
-	}
-	l.writer.Flush()
+	writeToFile(l, "FATAL", now, txt)
 
 	colorB := "\033[31m"
 	colorE := "\033[0m"
@@ -305,7 +226,7 @@ func (l *Logger) Fatalf(format string, i ...any) {
 }
 
 func (l *Logger) httplog(r *http.Request) {
-	now := l.tm.Format(time.DateTime)
+	now := time.Now().Format(time.DateTime)
 	l.logLevel = "DEBUG"
 	debug := &httpDebug{
 		tm:       now,
@@ -327,9 +248,11 @@ func (l *Logger) httplog(r *http.Request) {
 
 	if l.IsHttpDebug {
 		if l.isFileExist {
-			if _, err := l.file.WriteString(l.logLevel + " [" + now + "] " + string(jsonData) + "\n"); err != nil {
+			l.mu.Lock()
+			if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + string(jsonData) + "\n"); err != nil {
 				return
 			}
+			l.mu.Unlock()
 		}
 		fmt.Println(colorB + string(jsonData) + colorE)
 	}
