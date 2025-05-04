@@ -48,3 +48,38 @@ type httpDebug struct {
 	// url path of request
 	path string `json:"url"`
 }
+
+type Logging interface {
+	// information logs
+	Info(i ...any)
+	Infoln(i ...any)
+	Infof(format string, i ...any)
+
+	// error logs
+	Error(i ...any)
+	Errorln(i ...any)
+	Errorf(format string, i ...any)
+
+	// it's using - exit(1)
+	Fatalf(format string, i ...any)
+	Fatalln(i ...any)
+	Fatal(i ...any)
+}
+
+type Info interface {
+	Info(i ...any)
+	Infoln(i ...any)
+	Infof(format string, i ...any)
+}
+
+type ErrorInfo interface {
+	Error(i ...any)
+	Errorln(i ...any)
+	Errorf(format string, i ...any)
+}
+
+type FatalInfo interface {
+	Fatalf(format string, i ...any)
+	Fatalln(i ...any)
+	Fatal(i ...any)
+}
