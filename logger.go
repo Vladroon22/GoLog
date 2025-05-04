@@ -4,16 +4,13 @@ import (
 	"bufio"
 	"os"
 	"sync"
-	"time"
 )
 
 type Logger struct {
 	// file where stores logs
 	file *os.File
 
-	// current time of this log
-	tm time.Time `json:"time"`
-
+	// for concurrent access to file
 	mu sync.Mutex
 
 	// check file's existing

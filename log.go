@@ -52,7 +52,6 @@ func writeToFile(l *Logger, loglevel, now, txt string) {
 		fmt.Println("Failed to write to log file:", err)
 		return
 	}
-
 }
 
 func (l *Logger) Info(i ...any) {
