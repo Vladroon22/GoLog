@@ -39,15 +39,20 @@ func (l *Logger) SetOutput(filename string) (*os.File, error) {
 }
 
 func writeToFile(l *Logger, loglevel, now, txt string) {
+	if !l.isFileExist {
+		return
+	}
+
 	l.mu.Lock()
 	defer l.mu.Unlock()
+	defer l.writer.Flush()
 
 	l.logLevel = loglevel
 	if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + txt + "\n"); err != nil {
 		fmt.Println("Failed to write to log file:", err)
 		return
 	}
-	l.writer.Flush()
+
 }
 
 func (l *Logger) Info(i ...any) {
