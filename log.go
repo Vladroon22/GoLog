@@ -54,14 +54,20 @@ func writeToFile(l *Logger, loglevel, now, txt string) {
 	}
 }
 
-func (l *Logger) Info(i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
+func httpLog(l *Logger, i ...any) {
+	if !l.IsHttpDebug {
+		return
+	}
+
+	for _, item := range i {
+		if req, ok := item.(*httpRequest); ok {
+			l.httplog(*req)
 		}
 	}
+}
+
+func (l *Logger) Info(i ...any) {
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -74,13 +80,7 @@ func (l *Logger) Info(i ...any) {
 }
 
 func (l *Logger) Infoln(i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
-		}
-	}
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -93,13 +93,7 @@ func (l *Logger) Infoln(i ...any) {
 }
 
 func (l *Logger) Infof(format string, i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
-		}
-	}
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -112,13 +106,7 @@ func (l *Logger) Infof(format string, i ...any) {
 }
 
 func (l *Logger) Error(i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
-		}
-	}
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -131,13 +119,7 @@ func (l *Logger) Error(i ...any) {
 }
 
 func (l *Logger) Errorln(i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
-		}
-	}
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -150,13 +132,7 @@ func (l *Logger) Errorln(i ...any) {
 }
 
 func (l *Logger) Errorf(format string, i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
-		}
-	}
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -169,13 +145,7 @@ func (l *Logger) Errorf(format string, i ...any) {
 }
 
 func (l *Logger) Fatal(i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
-		}
-	}
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -189,13 +159,7 @@ func (l *Logger) Fatal(i ...any) {
 }
 
 func (l *Logger) Fatalln(i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
-		}
-	}
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
@@ -209,13 +173,7 @@ func (l *Logger) Fatalln(i ...any) {
 }
 
 func (l *Logger) Fatalf(format string, i ...any) {
-	if l.IsHttpDebug {
-		for _, item := range i {
-			if req, ok := item.(*httpRequest); ok {
-				l.httplog(*req)
-			}
-		}
-	}
+	go httpLog(l, i...)
 
 	now := time.Now().Format(time.DateTime)
 	txt := fmt.Sprint(i...)
