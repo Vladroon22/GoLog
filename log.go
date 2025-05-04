@@ -207,14 +207,12 @@ func (l *Logger) httplog(r *http.Request) {
 	colorB := "\033[32m"
 	colorE := "\033[0m"
 
-	if l.IsHttpDebug {
-		if l.isFileExist {
-			l.mu.Lock()
-			if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + string(jsonData) + "\n"); err != nil {
-				return
-			}
-			l.mu.Unlock()
+	if l.isFileExist {
+		l.mu.Lock()
+		if _, err := l.writer.WriteString(l.logLevel + " [" + now + "] " + string(jsonData) + "\n"); err != nil {
+			return
 		}
-		fmt.Println(colorB + string(jsonData) + colorE)
+		l.mu.Unlock()
 	}
+	fmt.Println(colorB + string(jsonData) + colorE)
 }
